@@ -21,8 +21,8 @@ function handleRequest() {
       
       ## Parses the path parameter (integer)
       # e.g GET /clientes/1/extrato HTTP/1.1 -> GET /clientes/:id/extrato -> 1
-      IFS="/" read -r ROTA ID PARAMETRO<<< "${REQUEST#*\/}"
-      PARAMS["id"]="${id}"
+      IFS="/" read -r ROTA ID PARAMETRO <<< "${REQUEST#*\/}"
+      PARAMS["id"]="${ID}"
       REQUEST="${ROTA}/:id/${PARAMETRO}"
     }
 
