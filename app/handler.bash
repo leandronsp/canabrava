@@ -33,7 +33,7 @@ function handleRequest() {
 
   ## Read the remaining HTTP request body
   [[ "$CONTENT_LENGTH" ]] && {
-    read -n$CONTENT_LENGTH BODY
+    read -n${CONTENT_LENGTH} BODY
   }
 
   ## Route request to the response handler
