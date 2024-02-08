@@ -23,7 +23,7 @@ function handleRequest() {
       # e.g GET /clientes/1/extrato HTTP/1.1 -> GET /clientes/:id/extrato -> 1
       IFS="/" read -r ROTA ID PARAMETRO<<< "${REQUEST#*\/}"
       PARAMS["id"]="${id}"
-      REQUEST="${ROTA}/:id/${OARAMETRO}"
+      REQUEST="${ROTA}/:id/${PARAMETRO}"
     }
 
     ## Parses the Content-Length header
