@@ -8,12 +8,13 @@ services:
       - .:/app
     depends_on:
       - postgres
+      - pgbouncer
     command: bash netcat.bash
     deploy:
       resources:
         limits:
-          cpus: '0.3'
-          memory: '150MB'
+          cpus: '0.2'
+          memory: '100MB'
 
   api2: 
     <<: *api
@@ -35,6 +36,28 @@ services:
         limits:
           cpus: '0.7'
           memory: '200MB'
+
+  pgbouncer:
+    image: pgbouncer/pgbouncer
+    hostname: pgbouncer
+    container_name: pgbouncer
+    environment:
+      - DATABASES_HOST=postgres
+      - DATABASES_PORT=5432
+      - DATABASES_USER=postgres
+      - DATABASES_PASSWORD=postgres
+      - DATABASES_DBNAME=postgres
+      - DATABASES_POOL_SIZE=100
+      - PGBOUNCER_MAX_CLIENT_CONN=100
+      - PGBOUNCER_RESERVE_POOL_SIZE=100
+      - PGBOUNCER_DEFAULT_POOL_SIZE=100
+    depends_on:
+      - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: '100MB'
 
   nginx:
     image: nginx 
