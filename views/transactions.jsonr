@@ -1,7 +1,4 @@
 HTTP/1.1 200
 Content-Type: application/json
 
-{
-    "limite" : 100000,
-    "saldo" : -9098
-}
+{{data}}

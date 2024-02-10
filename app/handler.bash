@@ -35,10 +35,21 @@ function handleRequest() {
       CONTENT_LENGTH=$(echo $trline | sed -E "s/$CONTENT_LENGTH_REGEX/\1/")
   done
 
+  BODY=""
+
   ## Read the remaining HTTP request body
   if [ ! -z "$CONTENT_LENGTH" ]; then
-    read -n$CONTENT_LENGTH BODY
+    while read -n$CONTENT_LENGTH -t1 line; do
+      trline=`echo $line | tr -d '[\r\n]'`
+      BODY+="$trline"
+
+      [ -z "$trline" ] && break
+    done
   fi
+
+  ## Fixme: This is a hacky way to finish the request body (JSON)
+  ## For some weird reason, the last character is being removed
+  BODY+="}"
 
   ## Route request to the response handler
   source ./app/bank_statement.bash
