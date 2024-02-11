@@ -21,7 +21,9 @@ echo "emitindo sinal para orquestrador ..."
 while :
 do
 	# mantendo escuta socket na porta 3000
-	socat TCP4-LISTEN:"3000",reuseaddr,fork,end-close EXEC:'./receptor.sh' 2>> './socat.log' &
+#	socat TCP4-LISTEN:"3000",reuseaddr,fork,end-close EXEC:'./receptor.sh' 2>> './socat.log' &
+	socat -t 0 TCP4-LISTEN:"3000",reuseaddr,fork,end-close EXEC:'./receptor.sh' 2>> './socat.log'
+
 	PID="${!}"
 	echo 'Listening on 3000...'
 	wait "${PID}"
