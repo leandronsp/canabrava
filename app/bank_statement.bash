@@ -2,8 +2,7 @@ function handle_GET_bank_statement() {
   ID="${PARAMS["id"]}"
 
   [[ "${ID}" ]] && {
-    QUERY="
-WITH ten_transactions AS (
+    QUERY="WITH ten_transactions AS (
     SELECT * FROM transactions 
     WHERE account_id = $ID 
     ORDER BY date DESC
@@ -35,7 +34,6 @@ WHERE accounts.id = ${ID}
 GROUP BY accounts.id, balances.amount, accounts.limit_amount"
 
     RESULT="$(psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "$QUERY")"
-
     [[ "${RESULT// }" ]] && {
       RESPONSE="$(< "views/bank_statement.jsonr")"
       RESPONSE="${RESPONSE//\{\{data\}\}/$RESULT}"

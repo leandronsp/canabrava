@@ -7,9 +7,9 @@ REQUEST="${TYPE}${ROTA}/:id/${PARAMETRO}"
 
 function handleRequest() {
   ## Read the HTTP request until \r\n
-  while read line || [[ -n $line ]]; do
+  while read -r trline || [[ -n "${trline}" ]]; do
     #echo $line
-    trline=$(tr -d '[\r\n]' <<< $line) ## Removes the \r\n from the EOL
+    # trline=$(tr -d '[\r\n]' <<< $line) ## Removes the \r\n from the EOL
 
     ## Breaks the loop when line is empty
     [[ "${trline}" ]] || break
@@ -29,14 +29,14 @@ function handleRequest() {
     # ## Parses the Content-Length header
     # ## e.g Content-Length: 42 -> 42
     [[ "${trline}" = *"Content-Length"* ]] && CONTENT_LENGTH="${trline##*:\ }"
-  done
+  done <<< "${1}"
 
 #  BODY=""
 
   ## Read the remaining HTTP request body
   [[ "$CONTENT_LENGTH" ]] && {
     while read -n$CONTENT_LENGTH -t1 line || [[ -n ${line} ]]; do
-      trline="$(tr -d '[\r\n]' <<< "${line}")"
+      trline="${line%%$'\r\n'}"
       BODY+="${trline}"
       [[ "${trline}" ]] || break
     done
@@ -54,5 +54,6 @@ function handleRequest() {
     *) 			             handle_not_found ;;
   esac
 
-  echo -e "${RESPONSE}" > "${FIFO_PATH}"
+  # echo -e "${RESPONSE}" > "${FIFO_PATH}"
+  echo -e "${RESPONSE}" > retorno
 }
