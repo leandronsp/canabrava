@@ -1,6 +1,6 @@
-#!/bin/bash
+#! /bin/bash
 
-PID=$"{$}"
+PID="${$}"
 
 ## Create the response FIFO
 mkdir -p "/tmp/pid-${PID}"
@@ -21,5 +21,5 @@ do
   ## 4. the handleRequest function processes the request message and routes it to the response handler, which writes to the FIFO
   ## 5. as soon as the FIFO receives a message, it's sent to the socket
   ## 6. closes the connection (`-N`), closes the socket and repeat the loop
-  nc -lN 3000 <<< "${FIFO_PATH}" | handleRequest
+  cat "${FIFO_PATH}" | nc -lN 3000 | handleRequest
 done
