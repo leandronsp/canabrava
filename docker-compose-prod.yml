@@ -5,7 +5,9 @@ services:
     image: leandronsp/canabrava
     container_name: api1
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+      pgbouncer:
     deploy:
       resources:
         limits:
@@ -27,6 +29,11 @@ services:
       - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     deploy:
       resources:
         limits:
