@@ -18,7 +18,7 @@ stress.it: ## Run stress tests
 	@sh stress-test/run-test.sh
 
 docker.build: ## Build the docker image
-	@docker build -t leandronsp/canabrava .
+	@docker build -t leandronsp/canabrava --target prod .
 
 docker.push: ## Push the docker image
 	@docker push leandronsp/canabrava
