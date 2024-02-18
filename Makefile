@@ -16,3 +16,9 @@ health.check: ## Check the stack is healthy
 
 stress.it: ## Run stress tests
 	@sh stress-test/run-test.sh
+
+docker.build: ## Build the docker image
+	@docker build -t leandronsp/canabrava .
+
+docker.push: ## Push the docker image
+	@docker push leandronsp/canabrava

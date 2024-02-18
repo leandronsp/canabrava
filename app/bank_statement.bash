@@ -37,7 +37,6 @@ GROUP BY accounts.id, balances.amount, accounts.limit_amount"
     RESULT=`psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "$QUERY" | tr -d '[:space:]'` 
 
     if [ ! -z "$RESULT" ]; then
-
       RESPONSE=$(cat views/bank_statement.jsonr | sed "s/{{data}}/$RESULT/")
     else
       RESPONSE=$(cat views/404.htmlr)

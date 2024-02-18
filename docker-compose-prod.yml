@@ -1,15 +1,11 @@
+version: '3.9'
+
 services:
   api1: &api
-    build: 
-      context: .
-      target: base
+    image: leandronsp/canabrava
     container_name: api1
-    volumes:
-      - .:/app
     depends_on:
       - postgres
-      - pgbouncer
-    command: bash netcat.bash
     deploy:
       resources:
         limits:

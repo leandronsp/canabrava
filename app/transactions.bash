@@ -6,7 +6,7 @@ function handle_POST_transactions() {
 
   if [ "$TRANSACTION_TYPE" == "c" ]; then
     OPERATION="+"
-  else
+  elif [ "$TRANSACTION_TYPE" == "d" ]; then
     OPERATION="-"
   fi
 
@@ -31,8 +31,7 @@ WHERE account_id = $ID"
     RESULT=`psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "$QUERY" | tr -d '[:space:]'` 
 
     if [ ! -z "$RESULT" ]; then
-
-      RESPONSE=$(cat views/bank_statement.jsonr | sed "s/{{data}}/$RESULT/")
+      RESPONSE=$(cat views/transactions.jsonr | sed "s/{{data}}/$RESULT/")
     else
       RESPONSE=$(cat views/404.htmlr)
     fi
