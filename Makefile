@@ -8,6 +8,9 @@ help: ## Prints available commands
 start.dev: ## Start the rinha in Dev
 	@docker-compose up -d nginx
 
+start.prod: ## Start the rinha in Prod
+	@docker-compose -f docker-compose-prod.yml up -d nginx
+
 docker.stats: ## Show docker stats
 	@docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.MemPerc}}"
 
