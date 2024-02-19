@@ -23,7 +23,7 @@ SELECT
             'valor', transactions.amount,
             'tipo', transactions.transaction_type,
             'descricao', transactions.description,
-            'realizada_em', transactions.date::date
+            'realizada_em', TO_CHAR(transactions.date, 'YYYY-MM-DD HH:MI:SS.US')
           )
         )
       END
