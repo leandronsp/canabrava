@@ -49,7 +49,7 @@ function handleRequest() {
 
   ## Fixme: This is a hacky way to finish the request body (JSON)
   ## For some weird reason, the last character is being removed
-  BODY+="}"
+  #BODY+="}"
 
   ## Route request to the response handler
   source ./app/bank_statement.bash
@@ -63,5 +63,7 @@ function handleRequest() {
     *) 			             handle_not_found ;;
   esac
 
-  echo -e "$RESPONSE" > $FIFO_PATH
+  echo -e "$RESPONSE"
 }
+
+handleRequest

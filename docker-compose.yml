@@ -1,4 +1,12 @@
 services:
+  app:
+    build: 
+      context: .
+      target: base
+    container_name: api1
+    volumes:
+      - .:/app
+
   api1: &api
     build: 
       context: .
@@ -9,12 +17,12 @@ services:
     depends_on:
       - postgres
       - pgbouncer
-    command: bash netcat.bash
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: '100MB'
+    command: bash socat.bash
+      #deploy:
+      #  resources:
+      #    limits:
+      #      cpus: '0.2'
+      #      memory: '100MB'
 
   api2: 
     <<: *api
