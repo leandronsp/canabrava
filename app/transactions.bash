@@ -15,18 +15,17 @@ function handle_POST_transactions() {
 INSERT INTO transactions (account_id, amount, description, transaction_type)
 VALUES ($ID, $AMOUNT, '$DESCRIPTION', '$TRANSACTION_TYPE');
 
-UPDATE balances
-SET amount = amount $OPERATION $AMOUNT
-WHERE balances.account_id = $ID;
+UPDATE accounts
+SET balance = balance $OPERATION $AMOUNT
+WHERE accounts.id = $ID;
 
 SELECT 
   json_build_object(
     'limite', accounts.limit_amount,
-    'saldo', balances.amount
+    'saldo', accounts.balance
   )
 FROM accounts 
-LEFT JOIN balances ON balances.account_id = accounts.id
-WHERE account_id = $ID"
+WHERE accounts.id = $ID"
 
     RESULT=`psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "$QUERY" | tr -d '[:space:]'` 
 

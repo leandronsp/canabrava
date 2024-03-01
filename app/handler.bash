@@ -39,12 +39,7 @@ function handleRequest() {
 
   ## Read the remaining HTTP request body
   if [ ! -z "$CONTENT_LENGTH" ]; then
-    while read -n$CONTENT_LENGTH -t1 line; do
-      trline=`echo $line | tr -d '[\r\n]'`
-      BODY+="$trline"
-
-      [ -z "$trline" ] && break
-    done
+    read -n$CONTENT_LENGTH BODY
   fi
 
   ## Fixme: This is a hacky way to finish the request body (JSON)

@@ -11,28 +11,27 @@ WITH ten_transactions AS (
 )
 SELECT 
   json_build_object('saldo', json_build_object(
-    'total', balances.amount,
+    'total', accounts.balance,
     'data_extrato', NOW()::date,
     'limite', accounts.limit_amount,
     'ultimas_transacoes', 
       CASE 
-      WHEN COUNT(transactions) = 0 THEN '[]'
+      WHEN COUNT(ten_transactions.id) = 0 THEN '[]'
       ELSE
         json_agg(
           json_build_object(
-            'valor', transactions.amount,
-            'tipo', transactions.transaction_type,
-            'descricao', transactions.description,
-            'realizada_em', TO_CHAR(transactions.date, 'YYYY-MM-DD HH:MI:SS.US')
+            'valor', ten_transactions.amount,
+            'tipo', ten_transactions.transaction_type,
+            'descricao', ten_transactions.description,
+            'realizada_em', date(ten_transactions.date)
           )
         )
       END
   ))
 FROM accounts
-LEFT JOIN balances ON balances.account_id = accounts.id
-LEFT JOIN ten_transactions AS transactions ON transactions.account_id = accounts.id
+LEFT JOIN ten_transactions ON ten_transactions.account_id = accounts.id
 WHERE accounts.id = $ID
-GROUP BY accounts.id, balances.amount, accounts.limit_amount"
+GROUP BY accounts.id, accounts.balance, accounts.limit_amount"
 
     RESULT=`psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "$QUERY" | tr -d '[:space:]'` 
 
