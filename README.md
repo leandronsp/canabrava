@@ -11,6 +11,8 @@ _/ ___\\__  \  /    \\__  \ | __ \_  __ \__  \\  \/ /\__  \
 
 Uma versão Bash da [rinha do backend 2ª edição](https://github.com/zanfranceschi/rinha-de-backend-2024-q1) 2024/Q1
 
+![Screenshot 2024-03-06 at 09 49 42](https://github.com/leandronsp/canabrava/assets/385640/4f0ae566-dce5-46f7-a65e-a6cc45350082)
+
 ## Requisitos
 
 * [Docker](https://docs.docker.com/get-docker/)
