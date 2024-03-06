@@ -15,8 +15,8 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - postgres
-      - pgbouncer
+      postgres:
+        condition: service_healthy
     command: bash socat.bash
     deploy:
       resources:
@@ -37,6 +37,11 @@ services:
       - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./config/postgresql.conf:/etc/postgresql/postgresql.conf
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     deploy:
       resources:
         limits:
@@ -58,7 +63,8 @@ services:
       - PGBOUNCER_RESERVE_POOL_SIZE=30
       - PGBOUNCER_DEFAULT_POOL_SIZE=30
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -71,6 +77,7 @@ services:
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
+      - pgbouncer
       - api1
       - api2
     ports:

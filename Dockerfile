@@ -5,4 +5,4 @@ WORKDIR /app
 FROM base AS prod
 COPY . .
 EXPOSE 3000
-CMD ["bash", "netcat.bash"]
+CMD ["bash", "socat.bash"]
