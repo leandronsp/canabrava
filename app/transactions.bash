@@ -1,23 +1,23 @@
 function handle_POST_transactions() {
-  ID=${PARAMS["id"]}
-  AMOUNT=$(echo "$BODY" | jq -r '.valor')
-  TRANSACTION_TYPE=$(echo "$BODY" | jq -r '.tipo')
-  DESCRIPTION=$(echo "$BODY" | jq -r '.descricao')
+  ID="${PARAMS["id"]}"
+  AMOUNT=$(jq -r '.valor' <<< "${BODY}")
+  TRANSACTION_TYPE=$(jq -r '.tipo' <<< "${BODY}")
+  DESCRIPTION=$(jq -r '.descricao' <<< "${BODY}")
 
-  if [ "$TRANSACTION_TYPE" == "c" ]; then
+  [[ "${TRANSACTION_TYPE}" = "c" ]] && {
     OPERATION="+"
-  elif [ "$TRANSACTION_TYPE" == "d" ]; then
+  }||{
     OPERATION="-"
-  fi
+  }
 
-  if [ ! -z "$ID" ]; then
+  [[ "${ID}" ]] && {
     QUERY="
 INSERT INTO transactions (account_id, amount, description, transaction_type)
-VALUES ($ID, $AMOUNT, '$DESCRIPTION', '$TRANSACTION_TYPE');
+VALUES (${ID}, ${AMOUNT}, '${DESCRIPTION}', '${TRANSACTION_TYPE}');
 
 UPDATE accounts
-SET balance = balance $OPERATION $AMOUNT
-WHERE accounts.id = $ID;
+SET balance = balance ${OPERATION} ${AMOUNT}
+WHERE accounts.id = ${ID};
 
 SELECT 
   json_build_object(
@@ -25,14 +25,16 @@ SELECT
     'saldo', accounts.balance
   )
 FROM accounts 
-WHERE accounts.id = $ID"
+WHERE id = ${ID}
+FOR UPDATE"
 
-    RESULT=`psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "$QUERY" | tr -d '[:space:]'` 
+    RESULT=$(psql -t -h pgbouncer -U postgres -d postgres -p 6432 -c "${QUERY}")
 
-    if [ ! -z "$RESULT" ]; then
-      RESPONSE=$(cat views/transactions.jsonr | sed "s/{{data}}/$RESULT/")
-    else
-      RESPONSE=$(cat views/404.htmlr)
-    fi
-  fi
+    [[ "${RESULT// }" ]] && {
+      RESPONSE="$(< views/bank_statement.jsonr)"
+      RESPONSE="${RESPONSE//\{\{data\}\}/$RESULT}"
+    }||{
+      RESPONSE="$(< views/404.htmlr)"
+    }
+  }
 }
